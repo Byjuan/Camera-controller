@@ -26,7 +26,7 @@ To run the project, you need:
 - **Python 3.10+** (recommended).  
 - Libraries:  
   ```bash
-  pip installrrequiremets.txt
+  pip installrequirements.txt
 - **It must need a camera**.
 
 ---
@@ -54,10 +54,12 @@ Language Support:
 
 Example:
 
-    model = Model("modelos/vosk-model-es-0.42")  # Load model
-      recognizer = KaldiRecognizer(model, 16000)   # 16kHz sample rate
-      if recognizer.AcceptWaveform(data):          # Process audio chunks
-              text = json.loads(recognizer.Result())["text"]
+```python
+model = Model("modelos/vosk-model-es-0.42")  # Load model
+  recognizer = KaldiRecognizer(model, 16000)   # 16kHz sample rate
+  if recognizer.AcceptWaveform(data):          # Process audio chunks
+          text = json.loads(recognizer.Result())["text"]
+```
 
 ---
 
@@ -70,7 +72,7 @@ Color Detection:
   -  Converts BGR to HSV/LAB color spaces for robust detection.
 
   -  Uses cv2.inRange() to create masks for specific colors.
- 
+
 Morphological operations:
 
   -  Applies erosion/dilation (cv2.erode(), cv2.dilate()) to clean masks.
@@ -85,9 +87,11 @@ Camera Integration:
 
 Example:
 
-      hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)          # Convert color space
-      mask = cv2.inRange(hsv, lower_range, upper_range)     # Create mask
-      contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Detect objects
+```python
+  hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)          # Convert color space
+  mask = cv2.inRange(hsv, lower_range, upper_range)     # Create mask
+  contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Detect objects
+```
 
 ---
 
@@ -97,9 +101,9 @@ Features:
 
 Function Calling:
 
-  -  Declares custom functions (e.g., sumar_numeros, dividir_numeros) with descriptions/parameters.
+  -  Declares custom functions (e.g., detectar_color) with descriptions/parameters.
 
-  -  Parses natural language into structured calls (e.g., "Suma 5 y 3" → sumar_numeros(5, 3)).
+  -  Parses natural language into structured calls (e.g., "Detecta los colores azul y verde" → detectar_colores(azul, verde)).
 
 Text Generation:
 
@@ -111,18 +115,25 @@ Tool Configuration:
 
 Example: 
 
-    
-    
-    sumar_tool = types.FunctionDeclaration(
-      name="sumar_numeros",
-      description="Suma dos números",
-      parameters={"num1": {"type": "number"}, "num2": {"type": "number"}}
-    )
-    response = client.generate_content(
-       model="gemini-2.5-flash", 
-       contents="Suma 10 y 20", 
-       config=config
-    )
+
+​    
+```python
+self.detectar_color_tool = types.FunctionDeclaration(
+            name='detectar_color',
+            description='Inicia el detector de colores por cámara.',
+            parameters=types.Schema(
+                type=types.Type.OBJECT,
+                properties={
+                    'color': types.Schema(
+                        type=types.Type.STRING, 
+                        description='Color a detectar (Negro, Azul, Verde, Rojo, Morado)',
+                        enum=["Negro", "Azul", "Verde", "Rojo", "Morado"]
+                    ),
+                },
+                required=['color']
+            )
+        )
+```
 
 ---
 
@@ -145,11 +156,13 @@ Basic UI:
 
 Example: 
 
-        mixer.init()                          # Initialize audio
-        mixer.music.load("temp.mp3")          # Load TTS file
-        mixer.music.play()                    # Play audio
-        while mixer.music.get_busy():         # Wait for playback
-        time.sleep(0.05)
+```python
+    mixer.init()                          # Initialize audio
+    mixer.music.load("temp.mp3")          # Load TTS file
+    mixer.music.play()                    # Play audio
+    while mixer.music.get_busy():         # Wait for playback
+    time.sleep(0.05)
+```
 
 ---
 
@@ -171,11 +184,13 @@ Cross-Platform:
 
 Example:
 
-    def callback(indata, frames, time, status):
-    audio_queue.put(bytes(indata))  # Send audio to queue
+```python
+def callback(indata, frames, time, status):
+audio_queue.put(bytes(indata))  # Send audio to queue
 
-    stream = sd.InputStream(
-        samplerate=16000, 
-        callback=callback, 
-        dtype="int16"
-    )
+stream = sd.InputStream(
+    samplerate=16000, 
+    callback=callback, 
+    dtype="int16"
+)
+```
