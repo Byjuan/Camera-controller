@@ -26,7 +26,7 @@ To run the project, you need:
 - **Python 3.10+** (recommended).  
 - Libraries:  
   ```bash
-  pip installrequirements.txt
+  pip install requirements.txt -r
 - **It must need a camera**.
 
 ---
